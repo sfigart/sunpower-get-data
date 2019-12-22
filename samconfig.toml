@@ -1,0 +1,11 @@
+version = 0.1
+[default]
+[default.deploy]
+[default.deploy.parameters]
+stack_name = "sam-app-sunpower-get-data"
+s3_bucket = "aws-sam-cli-managed-default-samclisourcebucket-w5b2hfr6gpv2"
+s3_prefix = "sam-app-sunpower-get-data"
+region = "us-west-2"
+confirm_changeset = true
+capabilities = "CAPABILITY_IAM"
+
