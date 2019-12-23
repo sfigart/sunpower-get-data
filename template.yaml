@@ -8,7 +8,7 @@ Description: >
 # More info about Globals: https://github.com/awslabs/serverless-application-model/blob/master/docs/globals.rst
 Globals:
   Function:
-    Timeout: 5
+    Timeout: 10
     
 Resources:
   EnergyFunction:
@@ -21,7 +21,7 @@ Resources:
         Variables:
           HELLO: "world"
           LOGLEVEL: 1
-      Policies:
+      Policies: 
         - SSMParameterReadPolicy: {
           ParameterName: "sunpower-username",
         }
@@ -31,8 +31,18 @@ Resources:
         - SQSSendMessagePolicy: {
           QueueName: "sunpower-energy-queue"
         }
-        
-  
+        - Version: "2012-10-17"
+          Statement:
+            Effect: "Allow"
+            Action:
+            - "sqs:GetQueueUrl"
+            Resource: '*'
+      Events:
+        DailyEvent:
+          Type: Schedule
+          Properties:
+            Schedule: cron(0 6 * * ? *)
+            
 Outputs:
   # ServerlessRestApi is an implicit API created out of Events key under Serverless::Function
   # Find out more about other implicit resources you can reference within SAM

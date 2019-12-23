@@ -5,9 +5,6 @@ require 'aws-sdk-ssm'
 require 'aws-sdk-sqs'
 
 def lambda_handler(event:, context:)
-  puts "AWS Region: #{ENV['AWS_REGION']}"
-  puts "HELLO #{ENV["HELLO"]}"
-  
   sp = Sunpower.new(ENV["LOGLEVEL"].to_i)
   authorization = sp.authorize
   response = sp.get_data(authorization, "energy")
@@ -28,7 +25,6 @@ class Sunpower
 
   def initialize(loglevel = Logger::INFO)
     puts "Sunpower init"
-    puts "loglevel: #{loglevel}"
     @logger = Logger.new STDOUT
     @logger.level = loglevel
     RestClient.log = 'stdout' if @logger.level == Logger::DEBUG
@@ -89,8 +85,8 @@ class Sunpower
     
     begin
       queue_url = sqs.get_queue_url(queue_name: queue_name).queue_url
-    rescue Aws::SQS::Errors::NonExistentQueue
-      @logger.error "A queue named '#{queue_name}' does not exist."
+    rescue Aws::SQS::Errors::NonExistentQueue => e
+      @logger.error "A queue named '#{queue_name}' does not exist. #{e.inspect}"
       exit(false)
     end
 
